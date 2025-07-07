@@ -1,8 +1,11 @@
 ---
 - name: Include Tailscale role
-  ansible.builtin.include_role:
-    name: artis3n.tailscale
-  vars:
-    # Example pulling the API key from the env vars on the host running Ansible
-    tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
-    tailscale_args: "--ssh"
+  block:
+    - name: Set Tailscale variables
+      ansible.builtin.set_fact:
+        tailscale_authkey: "{{ tailscale_authkey }}"
+        tailscale_args: "--ssh"
+
+    - name: Install and configure Tailscale
+      ansible.builtin.include_role:
+        name: artis3n.tailscale.machine
